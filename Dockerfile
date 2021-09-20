@@ -29,13 +29,16 @@ RUN <<EOF
 groupadd --gid "${GID}" "${GROUPNAME}"
 useradd --create-home --shell /bin/bash --uid "${UID}" --gid "${GROUPNAME}" "${USERNAME}"
 echo "${USERNAME}:${PASSWORD}" | chpasswd
-echo "${USERNAME} ALL=(ALL) ALL" >/etc/sudoers.d/${USERNAME}
 EOF
 ENV USER=${USERNAME}
 
 RUN <<EOF
 mkdir -p /home/linuxbrew
 chown "${UID}:${GID}" /home/linuxbrew
+EOF
+
+COPY <<EOF  /etc/sudoers.d/${USERNAME}
+${USERNAME} ALL=(ALL) NOPASSWD: ALL
 EOF
 
 USER ${USERNAME}
