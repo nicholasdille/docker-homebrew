@@ -14,6 +14,7 @@ apt-get update
 apt-get -y install \
     curl \
     ca-certificates \
+    jq \
     xz-utils \
     sudo \
     git \
@@ -44,5 +45,10 @@ EOF
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
-RUN curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash \
- && echo "eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"" >>/home/${USER}/.bashrc
+RUN <<EOF
+curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
+/home/linuxbrew/.linuxbrew/bin/brew shellenv >>/home/${USER}/.bashrc
+EOF
+
+COPY test.sh /
+CMD [ "/bin/bash", "--login", "/test.sh" ]
