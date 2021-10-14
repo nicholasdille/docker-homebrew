@@ -20,6 +20,7 @@ apt-get -y install \
     git \
     vim-tiny \
     build-essential
+update-alternatives --install /usr/bin/vim vim /usr/bin/vim.tiny 0
 EOF
 
 ARG USERNAME=ubuntu
