@@ -18,6 +18,7 @@ apt-get -y install \
     xz-utils \
     sudo \
     git \
+    vim-tiny \
     build-essential
 EOF
 
