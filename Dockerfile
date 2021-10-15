@@ -27,11 +27,9 @@ ARG USERNAME=ubuntu
 ARG UID=1000
 ARG GROUPNAME=ubuntu
 ARG GID=1000
-ARG PASSWORD=password
 RUN <<EOF
 groupadd --gid "${GID}" "${GROUPNAME}"
 useradd --create-home --shell /bin/bash --uid "${UID}" --gid "${GROUPNAME}" "${USERNAME}"
-echo "${USERNAME}:${PASSWORD}" | chpasswd
 EOF
 ENV USER=${USERNAME}
 
