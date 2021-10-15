@@ -40,7 +40,7 @@ mkdir -p /home/linuxbrew
 chown "${UID}:${GID}" /home/linuxbrew
 EOF
 
-COPY <<EOF  /etc/sudoers.d/${USERNAME}
+COPY <<EOF /etc/sudoers.d/${USERNAME}
 ${USERNAME} ALL=(ALL) NOPASSWD: ALL
 EOF
 
