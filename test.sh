@@ -1,14 +1,6 @@
 #!/bin/bash
 set -eo pipefail
 
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-# GITHUB_WORKSPACE=/home/runner/work/foo/bar
-if test "$(pwd | tr -cd '/' | wc -c)" -lt 2; then
-    echo "ERROR: Must be at least two directories deep."
-    exit 1
-fi
-
 if ! test -d "${PWD}/.git"; then
     echo "ERROR: Must run on a git repository."
     exit 1
@@ -29,7 +21,7 @@ export GITHUB_HEAD_REF="$(git branch --show-current)"
 export GITHUB_PR_NUMBER="$(curl --silent "https://api.github.com/search/issues?q=repo:${GITHUB_REPOSITORY}+is:pr+head:${GITHUB_HEAD_REF}" | jq --raw-output '.items[].number')"
 export GITHUB_REF="refs/pull/${GITHUB_PR_NUMBER}"
 export GITHUB_BASE_REF="$(curl --silent "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${GITHUB_PR_NUMBER}" | jq --raw-output '.base.ref')"
-export GITHUB_WORKSPACE="/tmp/home/runner/work/${GITHUB_REPOSITORY}"
+export GITHUB_WORKSPACE="/$(mktemp -d)/${GITHUB_REPOSITORY}"
 
 echo
 echo "#####################################"
@@ -49,21 +41,20 @@ echo
 echo "#####################################"
 echo "### Set up Homebrew for GitHub CI ###"
 echo "#####################################"
-#curl -sL https://github.com/Homebrew/actions/raw/master/setup-homebrew/main.sh | RUNNER_OS=Linux bash -xes "" ""
 mkdir -p "${GITHUB_WORKSPACE}"
 HOMEBREW_TAP_REPOSITORY="$(brew --repo "$GITHUB_REPOSITORY")"
-if [[ -d "${HOMEBREW_TAP_REPOSITORY}" ]]; then
+if test -d "${HOMEBREW_TAP_REPOSITORY}"; then
     cd "${HOMEBREW_TAP_REPOSITORY}"
     git remote set-url origin "https://github.com/${GITHUB_REPOSITORY}"
 else
-    mkdir -vp "${HOMEBREW_TAP_REPOSITORY}"
+    mkdir -p "${HOMEBREW_TAP_REPOSITORY}"
     cd "${HOMEBREW_TAP_REPOSITORY}"
     git init
     git remote add origin "https://github.com/${GITHUB_REPOSITORY}"
 fi
-if [[ -z "${HOMEBREW_IN_CONTAINER-}" ]]; then
+if test -z "${HOMEBREW_IN_CONTAINER-}"; then
     rm -rf "${GITHUB_WORKSPACE}"
-    ln -vs "${HOMEBREW_TAP_REPOSITORY}" "${GITHUB_WORKSPACE}"
+    ln -s "${HOMEBREW_TAP_REPOSITORY}" "${GITHUB_WORKSPACE}"
 fi
 git fetch origin "${GITHUB_SHA}" '+refs/heads/*:refs/remotes/origin/*'
 git remote set-head origin --auto
