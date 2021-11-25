@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    uses: nicholasdille/workflows/.github/workflows/docker-build.yaml@v1.0.1
+    uses: nicholasdille/workflows/.github/workflows/docker-build.yaml@v1
     with:
       image_name: homebrew
     secrets:
