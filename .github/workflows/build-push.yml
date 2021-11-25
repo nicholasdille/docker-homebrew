@@ -13,3 +13,8 @@ on:
 jobs:
   build:
     uses: nicholasdille/workflows/.github/workflows/docker-build.yaml@v1.0.0-rc.2
+    with:
+      image_name: homebrew
+      secrets:
+        docker_hub_username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        docker_hub_token: ${{ secrets.DOCKER_HUB_PASSWORD }}
