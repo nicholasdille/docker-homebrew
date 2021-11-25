@@ -12,4 +12,4 @@ on:
 
 jobs:
   build:
-    uses: nicholasdille/workflows/docker-build.yaml@v1.0.0-rc.1
+    uses: nicholasdille/workflows/.github/workflows/docker-build.yaml@v1.0.0-rc.2
